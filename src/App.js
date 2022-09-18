@@ -9,21 +9,21 @@ function App() {
   const [isActive, setIsActive] = useState(false)
 
   function toggle() {
-    console.log("click")
     setIsActive(!isActive)
+    console.log(isActive)
   }
 
   useEffect(() => {
     let interval = null
     if (isActive) {
-      interval = setInterval(() => {
-        setComplete((complete) => complete + 1)
+      setInterval(() => {
+        interval = setComplete((complete) => complete + 1)
       }, 1000)
     } else if (!isActive && complete !== 0) {
       clearInterval(interval)
     }
     return () => clearInterval(interval)
-  }, [])
+  }, [isActive, complete])
 
   return (
     <div className="App">
