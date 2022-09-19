@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react"
 
 const ProgressBar = (props) => {
-  const { bgcolor, complete } = props
+    // console.log(props.bgColor)
 
   const containerStyles = {
     height: 20,
@@ -12,10 +12,10 @@ const ProgressBar = (props) => {
   }
 
   const fillerStyles = {
-    transition: "width 1s ease-in-out",
+    transition: "width 0.5s ease-in-out",
     height: "100%",
-    width: `${complete/1.8}%`,
-    backgroundColor: bgcolor,
+    width: `${props.complete/1.8}%`,
+    backgroundColor: `rgba(${props.bgColor.red},${props.bgColor.green},${props.bgColor.blue},${props.bgColor.alpha})`,
     borderRadius: "inherit",
     textAlign: "right",
   }
@@ -29,7 +29,7 @@ const ProgressBar = (props) => {
   return (
     <div style={containerStyles}>
       <div style={fillerStyles}>
-        <span style={labelStyles}>{`${complete}`}</span>
+        <span style={labelStyles}>{`${props.complete}`}</span>
       </div>{" "}
     </div>
   )
