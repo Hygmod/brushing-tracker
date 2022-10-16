@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react"
-import logo from "./logo.svg"
 import "./App.css"
 import StartButton from "./components/StartButton"
 import ProgressBar from "./components/ProgressBar"
@@ -7,9 +6,7 @@ import ProgressBar from "./components/ProgressBar"
 function App() {
   const [complete, setComplete] = useState(0)
   const [isActive, setIsActive] = useState(false)
-  const [bgColorRed, setBgColorRed] = useState(255)
-  const [bgColorGreen, setBgColorGreen] = useState(0)
-  const [bgColorBlue, setBgColorBlue] = useState(0)
+  const [bgColor, setBgColor] = useState({ r: 255, g: 0, b: 0, a: 1 })
 
   const totalTime = 120
 
@@ -19,30 +16,24 @@ function App() {
 
   useEffect(() => {
     let interval = null
+
+    let redChange = -5
+    let greenChange = 0
+    let blueChange = 0
+    if (complete >= (totalTime * 1) / 4 - 1) {
+      if (complete === totalTime / 4 - 1) {
+        bgColor.r = 0
+        bgColor.b = 100
+      }
+      redChange = 0
+      greenChange = 0
+      blueChange = 5
+    }
+    let newColor = { r: bgColor.r + redChange, g: bgColor.g + greenChange, b: bgColor.b + blueChange, a: 1 }
+
     if (isActive && complete < totalTime) {
       interval = setInterval(() => {
-        if (complete >= totalTime-1) {
-          setBgColorRed((bgColorRed) => 0)
-          setBgColorGreen((bgColorGreen) => 255)
-          setBgColorBlue((bgColorBlue) => 0)
-        } else if (complete > 90) {
-          setBgColorRed((bgColorRed) => 50)
-          setBgColorGreen((bgColorGreen) => 150)
-          setBgColorBlue((bgColorBlue) => 100)
-        } else if (complete > 60) {
-          setBgColorRed((bgColorRed) => 100)
-          setBgColorGreen((bgColorGreen) => 100)
-          setBgColorBlue((bgColorBlue) => 175)
-        } else if (complete > 30) {
-          setBgColorRed((bgColorRed) => 200)
-          setBgColorGreen((bgColorGreen) => 50)
-          setBgColorBlue((bgColorBlue) => 100)
-        } else {
-          setBgColorRed((bgColorRed) => 255)
-          setBgColorGreen((bgColorGreen) => 0)
-          setBgColorBlue((bgColorBlue) => 0)
-        }
-
+        setBgColor((bgColor) => ({ ...bgColor, ...newColor }))
         setComplete((complete) => complete + 1)
       }, 1000)
     } else if (!isActive && complete !== 0) {
@@ -51,12 +42,12 @@ function App() {
       setIsActive(false)
     }
     return () => clearInterval(interval)
-  }, [isActive, complete, bgColorRed])
+  }, [isActive, complete, bgColor])
 
   return (
     <div className="App">
       <StartButton isActive={isActive} onClick={toggle} />
-      <ProgressBar bgColorRed={bgColorRed} bgColorGreen={bgColorGreen} bgColorBlue={bgColorBlue} complete={complete} />
+      <ProgressBar bgColor={bgColor} complete={complete} />
     </div>
   )
 }
