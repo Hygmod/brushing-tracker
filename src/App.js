@@ -14,22 +14,47 @@ function App() {
     setIsActive(!isActive)
   }
 
-  useEffect(() => {
-    let interval = null
-
+  function changeColor(){
     let redChange = -5
     let greenChange = 0
     let blueChange = 0
-    if (complete >= (totalTime * 1) / 4 - 1) {
-      if (complete === totalTime / 4 - 1) {
+    if (complete >= (totalTime * 3) / 4 - 1) {
+      if (complete === (totalTime * 3) / 4 - 1) {
         bgColor.r = 0
+        bgColor.g = 100
+        bgColor.b = 0
+      }
+      redChange = 0
+      greenChange = 5
+      blueChange = 0
+      
+    } else if (complete >= (totalTime * 2) / 4 - 1) {
+      if (complete === (totalTime * 2) / 4 - 1) {
+        bgColor.r = 255
+        bgColor.g = 50
+        bgColor.b = 0
+      }
+      redChange = 0
+      greenChange = 5
+      blueChange = 0
+    } else if (complete >= (totalTime * 1) / 4 - 1) {
+      if (complete === (totalTime * 1) / 4 - 1) {
+        bgColor.r = 0
+        bgColor.g = 0
         bgColor.b = 100
       }
       redChange = 0
       greenChange = 0
       blueChange = 5
     }
-    let newColor = { r: bgColor.r + redChange, g: bgColor.g + greenChange, b: bgColor.b + blueChange, a: 1 }
+
+    return { r: bgColor.r + redChange, g: bgColor.g + greenChange, b: bgColor.b + blueChange, a: 1 }
+  }
+
+  useEffect(() => {
+    let interval = null
+
+    const newColor = changeColor()
 
     if (isActive && complete < totalTime) {
       interval = setInterval(() => {
