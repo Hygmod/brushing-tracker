@@ -2,13 +2,14 @@ import React, { useState, useEffect } from "react"
 import "./App.css"
 import StartButton from "./components/StartButton"
 import ProgressBar from "./components/ProgressBar"
+import CompleteButton from "./components/CompleteButton"
 
 function App() {
   const [complete, setComplete] = useState(0)
   const [isActive, setIsActive] = useState(false)
   const [bgColor, setBgColor] = useState({ r: 255, g: 0, b: 0, a: 1 })
 
-  const totalTime = 120
+  const totalTime = 10
 
   function toggle() {
     setIsActive(!isActive)
@@ -73,6 +74,7 @@ function App() {
     <div className="App">
       <StartButton isActive={isActive} onClick={toggle} />
       <ProgressBar bgColor={bgColor} complete={complete} />
+      <CompleteButton disabled={!complete===totalTime} />
     </div>
   )
 }
