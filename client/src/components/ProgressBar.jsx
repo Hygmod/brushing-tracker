@@ -13,7 +13,7 @@ console.log(props.bgColor)
   const fillerStyles = {
     transition: "width 0.5s ease-in-out",
     height: "100%",
-    width: `${props.complete/1.2}%`,
+    width: `${props.timer/1.2}%`,
     backgroundColor: `rgba(${props.bgColor.r},${props.bgColor.g},${props.bgColor.b},1)`,
     borderRadius: "inherit",
     textAlign: "right",
@@ -28,7 +28,7 @@ console.log(props.bgColor)
   return (
     <div style={containerStyles}>
       <div style={fillerStyles}>
-        <span style={labelStyles}>{`${props.complete}`}</span>
+        <span style={labelStyles}>{`${props.timer}`}</span>
       </div>{" "}
     </div>
   )
