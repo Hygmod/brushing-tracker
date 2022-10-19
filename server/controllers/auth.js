@@ -13,7 +13,7 @@ exports.getLogin = (req, res) => {
 
 exports.postLogin = (req, res, next) => {
   const validationErrors = [];
-  if (!validator.isEmail(req.body.email))
+  if (!validator.isEmail(req.body.username))
     validationErrors.push({ msg: "Please enter a valid email address." });
   if (validator.isEmpty(req.body.password))
     validationErrors.push({ msg: "Password cannot be blank." });
@@ -22,7 +22,7 @@ exports.postLogin = (req, res, next) => {
     req.flash("errors", validationErrors);
     return res.redirect("/login");
   }
-  req.body.email = validator.normalizeEmail(req.body.email, {
+  req.body.username = validator.normalizeEmail(req.body.username, {
     gmail_remove_dots: false,
   });
 
@@ -66,8 +66,11 @@ exports.getSignup = (req, res) => {
 };
 
 exports.postSignup = (req, res, next) => {
+  console.log('req.body',req.body)
+  // console.log('req.body.password',req.body.password)
+
   const validationErrors = [];
-  if (!validator.isEmail(req.body.email))
+  if (!validator.isEmail(req.body.username))
     validationErrors.push({ msg: "Please enter a valid email address." });
   if (!validator.isLength(req.body.password, { min: 8 }))
     validationErrors.push({
@@ -77,21 +80,22 @@ exports.postSignup = (req, res, next) => {
     validationErrors.push({ msg: "Passwords do not match" });
 
   if (validationErrors.length) {
-    req.flash("errors", validationErrors);
+    // req.flash("errors", validationErrors);
+    console.log("errors", validationErrors);
     return res.redirect("../signup");
   }
-  req.body.email = validator.normalizeEmail(req.body.email, {
+  req.body.username = validator.normalizeEmail(req.body.username, {
     gmail_remove_dots: false,
   });
 
   const user = new User({
     userName: req.body.userName,
-    email: req.body.email,
+    email: req.body.username,
     password: req.body.password,
   });
 
   User.findOne(
-    { $or: [{ email: req.body.email }, { userName: req.body.userName }] },
+    { $or: [{ email: req.body.username }, { userName: req.body.userName }] },
     (err, existingUser) => {
       if (err) {
         return next(err);

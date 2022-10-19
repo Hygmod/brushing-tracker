@@ -15,17 +15,22 @@ function App() {
 
   const [signupUsername, setSignupUsername] = useState("")
   const [signupPassword, setSignupPassword] = useState("")
+  const [signupConfirmPassword, setSignupConfirmPassword] = useState("")
   const [loginUsername, setLoginUsername] = useState("")
   const [loginPassword, setLoginPassword] = useState("")
+
+
   const signup = () => {
+    console.log(`http://localhost:2121/signup`)
     axios({
       method: "post",
+      url: `http://localhost:2121/signup`,
       data: {
         username: signupUsername,
         password: signupPassword,
+        confirmPassword: signupConfirmPassword,
       },
       withCredentials: true,
-      url: `http://localhost:${process.env.PORT}/signup`,
     }).then((res) => console.log(res))
   }
   const login = () => {
@@ -34,7 +39,7 @@ function App() {
       data: {
         username: loginUsername,
         password: loginPassword,
-      },
+              },
       withCredentials: true,
       url: `http://localhost:${process.env.PORT}/login`,
     }).then((res) => console.log(res))
@@ -108,7 +113,7 @@ function App() {
 
   return (
     <div className="App">
-      <LoginForm onClickSignup={signup} onClickLogin={signup} onChangeSignupUsername={setSignupUsername} onChangeSignupPassword={setSignupPassword} onChangeLoginUsername={setLoginUsername} onChangeLoginPassword={setLoginPassword}/>
+      <LoginForm onClickSignup={signup} onClickLogin={signup} onChangeSignupUsername={setSignupUsername} onChangeSignupPassword={setSignupPassword} onChangeSignupConfirmPassword={setSignupConfirmPassword} onChangeLoginUsername={setLoginUsername} onChangeLoginPassword={setLoginPassword} />
       <StartButton isActive={isActive} onClick={toggleActive} />
       <ProgressBar bgColor={bgColor} timer={timer} />
       <CompleteButton disabled={!complete} />
