@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react"
 
 const ProgressBar = (props) => {
-console.log(props.bgColor)
   const containerStyles = {
     height: 50,
     width: "90%",

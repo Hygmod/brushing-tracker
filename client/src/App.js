@@ -12,11 +12,13 @@ function App() {
   const [bgColor, setBgColor] = useState({ r: 255, g: 0, b: 0, a: 1 })
   const [complete, setComplete] = useState(0)
 
+  const [signupEmail, setSignupEmail] = useState("")
   const [signupUsername, setSignupUsername] = useState("")
   const [signupPassword, setSignupPassword] = useState("")
   const [signupConfirmPassword, setSignupConfirmPassword] = useState("")
   const [loginUsername, setLoginUsername] = useState("")
   const [loginPassword, setLoginPassword] = useState("")
+  const [username, setUsername] = useState("")
 
   const totalTime = 10
 
@@ -25,7 +27,8 @@ function App() {
       method: "post",
       url: `http://localhost:2121/signup`,
       data: {
-        username: signupUsername,
+        userName: signupUsername,
+        email: signupEmail,
         password: signupPassword,
         confirmPassword: signupConfirmPassword,
       },
@@ -33,22 +36,37 @@ function App() {
     }).then((res) => console.log(res))
   }
 
+  useEffect(() => {
+    axios.get(`http://localhost:2121/login`).then((response) => {
+      setUsername(response.data)
+    })
+  }, [username])
+
   const login = () => {
+    console.log('res')
     axios({
       method: "post",
       data: {
-        username: loginUsername,
+        email: loginUsername,
         password: loginPassword,
       },
       withCredentials: true,
       url: `http://localhost:2121/login`,
     }).then((res) => console.log(res))
+    setUsername('123')
+  }
+
+  const logout = () => {
+    axios({
+      method: "get",
+      url: `http://localhost:2121/logout`,
+    }).then((res) => console.log('res',res))
   }
 
   const markComplete = () => {
     axios({
-      method: "put",
-      url: `http://localhost:2121/complete`,
+      method: "post",
+      url: `http://localhost:2121/track/postComplete`,
       data: {
         streak: 1,
       },
@@ -125,6 +143,7 @@ function App() {
       <LoginForm
         onClickSignup={signup}
         onClickLogin={login}
+        onChangeSignupEmail={setSignupEmail}
         onChangeSignupUsername={setSignupUsername}
         onChangeSignupPassword={setSignupPassword}
         onChangeSignupConfirmPassword={setSignupConfirmPassword}
@@ -132,6 +151,8 @@ function App() {
         onChangeLoginPassword={setLoginPassword}
       />
       <StartButton isActive={isActive} onClick={toggleActive} />
+      <div>Username: {username}</div>
+      <StartButton logout={"logout"} isActive={isActive} onClick={logout} />
       <ProgressBar bgColor={bgColor} timer={timer} />
       <CompleteButton onClick={markComplete} disabled={!complete} />
     </div>

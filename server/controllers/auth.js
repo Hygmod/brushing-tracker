@@ -3,41 +3,40 @@ const validator = require("validator")
 const User = require("../models/User")
 
 exports.getLogin = (req, res) => {
+  console.log("req", req.user)
   if (req.user) {
-    return res.redirect("/profile")
+    return req.user
   }
-  res.render("login", {
-    title: "Login",
-  })
+  // res.render("login", {
+  //   title: "Login",
+  // })
 }
 
 exports.postLogin = (req, res, next) => {
   const validationErrors = []
-  if (!validator.isEmail(req.body.username)) validationErrors.push({ msg: "Please enter a valid email address." })
+  if (!validator.isEmail(req.body.email)) validationErrors.push({ msg: "Please enter a valid email address." })
   if (validator.isEmpty(req.body.password)) validationErrors.push({ msg: "Password cannot be blank." })
 
-  if (validationErrors.length) {
-    req.flash("errors", validationErrors)
-    return res.redirect("/login")
-  }
-  req.body.username = validator.normalizeEmail(req.body.username, {
+  console.log("auth controller postLogin validationErrors", validationErrors)
+  // return res.redirect("/login")
+
+  req.body.username = validator.normalizeEmail(req.body.email, {
     gmail_remove_dots: false,
   })
 
   passport.authenticate("local", (err, user, info) => {
+    console.log("auth controller postLogin err, user, info:", err, user, info)
     if (err) {
       return next(err)
     }
     if (!user) {
-      req.flash("errors", info)
-      return res.redirect("/login")
     }
     req.logIn(user, (err) => {
       if (err) {
         return next(err)
       }
-      req.flash("success", { msg: "Success! You are logged in." })
-      res.redirect(req.session.returnTo || "/profile")
+      console.log("auth controller postLogin successful login", user)
+      return res
     })
   })(req, res, next)
 }
@@ -49,7 +48,7 @@ exports.logout = (req, res) => {
   req.session.destroy((err) => {
     if (err) console.log("Error : Failed to destroy the session during logout.", err)
     req.user = null
-    res.redirect("/")
+    // res.redirect("/")
   })
 }
 
@@ -64,40 +63,34 @@ exports.getSignup = (req, res) => {
 
 exports.postSignup = (req, res, next) => {
   console.log("req.body", req.body)
-  // console.log('req.body.password',req.body.password)
 
   const validationErrors = []
-  if (!validator.isEmail(req.body.username)) validationErrors.push({ msg: "Please enter a valid email address." })
-  if (!validator.isLength(req.body.password, { min: 8 }))
-    validationErrors.push({
-      msg: "Password must be at least 8 characters long",
-    })
+  if (!validator.isEmail(req.body.email)) validationErrors.push({ msg: "Please enter a valid email address." })
+  if (!validator.isLength(req.body.password, { min: 8 })) validationErrors.push({ msg: "Password must be at least 8 characters long" })
   if (req.body.password !== req.body.confirmPassword) validationErrors.push({ msg: "Passwords do not match" })
 
-  if (validationErrors.length) {
-    // req.flash("errors", validationErrors);
-    console.log("errors", validationErrors)
-    return res.redirect("../signup")
-  }
-  req.body.username = validator.normalizeEmail(req.body.username, {
+  // req.flash("errors", validationErrors);
+  console.log("validationErrors", validationErrors)
+  // return res.redirect("../signup")
+
+  req.body.email = validator.normalizeEmail(req.body.email, {
     gmail_remove_dots: false,
   })
 
   const user = new User({
     userName: req.body.userName,
-    email: req.body.username,
+    email: req.body.email,
     password: req.body.password,
   })
 
-  User.findOne({ $or: [{ email: req.body.username }, { userName: req.body.userName }] }, (err, existingUser) => {
+  console.log("user", user)
+
+  User.findOne({ $or: [{ email: req.body.email }, { userName: req.body.userName }] }, (err, existingUser) => {
     if (err) {
       return next(err)
     }
     if (existingUser) {
-      req.flash("errors", {
-        msg: "Account with that email address or username already exists.",
-      })
-      return res.redirect("../signup")
+      console.log("Account with that email address or username already exists.")
     }
     user.save((err) => {
       if (err) {
@@ -107,25 +100,7 @@ exports.postSignup = (req, res, next) => {
         if (err) {
           return next(err)
         }
-        res.redirect("/profile")
       })
     })
   })
-}
-
-exports.postComplete = async (req, res) => {
-  console.log(req.body)
-  try {
-
-    await Put.findOneAndUpdate(
-      { _id: req.params.id },
-      {
-        $inc: { streak: 1 },
-      }
-    )
-    console.log("Streak +1")
-    // res.redirect(`/`)
-  } catch (err) {
-    console.log(err)
-  }
 }
