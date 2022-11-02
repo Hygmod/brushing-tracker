@@ -6,7 +6,6 @@ import ProgressBar from "./components/ProgressBar"
 import CompleteButton from "./components/CompleteButton"
 import LoginForm from "./components/LoginForm"
 
-
 function App() {
   const [timer, setTimer] = useState(0)
   const [isActive, setIsActive] = useState(false)
@@ -19,9 +18,9 @@ function App() {
   const [loginUsername, setLoginUsername] = useState("")
   const [loginPassword, setLoginPassword] = useState("")
 
+  const totalTime = 10
 
   const signup = () => {
-    console.log(`http://localhost:2121/signup`)
     axios({
       method: "post",
       url: `http://localhost:2121/signup`,
@@ -33,19 +32,29 @@ function App() {
       withCredentials: true,
     }).then((res) => console.log(res))
   }
+
   const login = () => {
     axios({
       method: "post",
       data: {
         username: loginUsername,
         password: loginPassword,
-              },
+      },
       withCredentials: true,
-      url: `http://localhost:${process.env.PORT}/login`,
+      url: `http://localhost:2121/login`,
     }).then((res) => console.log(res))
   }
 
-  const totalTime = 120
+  const markComplete = () => {
+    axios({
+      method: "put",
+      url: `http://localhost:2121/complete`,
+      data: {
+        streak: 1,
+      },
+      withCredentials: true,
+    }).then((res) => console.log(res))
+  }
 
   function toggleActive() {
     setIsActive(!isActive)
@@ -113,10 +122,18 @@ function App() {
 
   return (
     <div className="App">
-      <LoginForm onClickSignup={signup} onClickLogin={signup} onChangeSignupUsername={setSignupUsername} onChangeSignupPassword={setSignupPassword} onChangeSignupConfirmPassword={setSignupConfirmPassword} onChangeLoginUsername={setLoginUsername} onChangeLoginPassword={setLoginPassword} />
+      <LoginForm
+        onClickSignup={signup}
+        onClickLogin={login}
+        onChangeSignupUsername={setSignupUsername}
+        onChangeSignupPassword={setSignupPassword}
+        onChangeSignupConfirmPassword={setSignupConfirmPassword}
+        onChangeLoginUsername={setLoginUsername}
+        onChangeLoginPassword={setLoginPassword}
+      />
       <StartButton isActive={isActive} onClick={toggleActive} />
       <ProgressBar bgColor={bgColor} timer={timer} />
-      <CompleteButton disabled={!complete} />
+      <CompleteButton onClick={markComplete} disabled={!complete} />
     </div>
   )
 }

@@ -2,7 +2,7 @@ import React from 'react'
 
 const CompleteButton = (props) => {
   return (
-    <button disabled={props.disabled}> FINSHED! </button>
+    <button onClick={props.onClick} disabled={props.disabled}> FINSHED! </button>
   )
 }
 
