@@ -43,7 +43,6 @@ function App() {
   }, [username])
 
   const login = () => {
-    console.log('res')
     axios({
       method: "post",
       data: {
@@ -52,8 +51,8 @@ function App() {
       },
       withCredentials: true,
       url: `http://localhost:2121/login`,
-    }).then((res) => console.log(res))
-    setUsername('123')
+    }).then((res) => setUsername('abc'))
+    
   }
 
   const logout = () => {

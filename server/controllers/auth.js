@@ -3,7 +3,7 @@ const validator = require("validator")
 const User = require("../models/User")
 
 exports.getLogin = (req, res) => {
-  console.log("req", req.user)
+  console.log("auth controller getLogin req.user", req.user)
   if (req.user) {
     return req.user
   }
@@ -25,7 +25,6 @@ exports.postLogin = (req, res, next) => {
   })
 
   passport.authenticate("local", (err, user, info) => {
-    console.log("auth controller postLogin err, user, info:", err, user, info)
     if (err) {
       return next(err)
     }
@@ -36,7 +35,6 @@ exports.postLogin = (req, res, next) => {
         return next(err)
       }
       console.log("auth controller postLogin successful login", user)
-      return res
     })
   })(req, res, next)
 }
